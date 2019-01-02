@@ -33,6 +33,15 @@ bump = False
 bumpwidth = 400
 Cycle = 0
 Counts = 0
+MolesLetters = ["M","O","L","E","S"]
+PressureLetters = ["P","R","E","S","S","U","R","E"]
+TemperatureLetters = ["T","E","M","P","E","R","A","T","U","R","E"]
+VolumeLetters = ["V","O","L","U","M","E"]
+letterY = 185 #Y position for the column letters
+letterX = 15 #Y position for the column letters
+LettersList = [MolesLetters, PressureLetters, TemperatureLetters, VolumeLetters]
+LettersChoice = 0 #current column being printed
+
 
 
 # Used to manage how fast the screen updates
@@ -46,13 +55,17 @@ while not done:
         # User pressed down on a key
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                TempAmount+=1
+                if TempAmount<10:
+                    TempAmount+=1
             if event.key == pygame.K_DOWN:
-                TempAmount-=1
+                if TempAmount>0:
+                    TempAmount-=1
             if event.key == pygame.K_LEFT:
-                MoleAmount-=1
+                if MoleAmount>0:
+                    MoleAmount-=1
             if event.key == pygame.K_RIGHT:
-                MoleAmount+=1
+                if MoleAmount<10:
+                    MoleAmount+=1
             if event.key == pygame.K_w:
                 if VolumeAmount<100:
                     VolumeAmount+=10
@@ -64,7 +77,6 @@ while not done:
                         MolesX[i]-=10
                     if (MolesY[i]-180>15):
                         MolesY[i]-=10
-
 
     #screen fill
     screen.fill(BLACK)
@@ -125,7 +137,9 @@ while not done:
         Cycle = 0
         Counts = 0
     Cycle+=1
-    #Other Drawing Code
+    #---- Other Drawing Code ----
+
+    #--Title Code--
     font = pygame.font.SysFont('timesnewroman', 120, True, False)
     text = font.render("PV=nRT",True,WHITE)
     screen.blit(text, [170, 0])
@@ -136,6 +150,7 @@ while not done:
 
     pygame.draw.line(screen, WHITE, [15, 150], [785, 150], 3)
 
+    #--Body Code--
     pygame.draw.rect(screen, WHITE, [(10, 180), (30, 300)])
     pygame.draw.rect(screen, WHITE, [(50, 180), (30, 300)])
     pygame.draw.rect(screen, WHITE, [(90, 180), (30, 300)])
@@ -143,6 +158,17 @@ while not done:
     pygame.draw.rect(screen, WHITE, [(175-bumpwidth, 180-bumpwidth), (300+(2*bumpwidth)+VolumeAmount, 200+(2*bumpwidth)+VolumeAmount)], 3)
     pygame.draw.rect(screen, WHITE, [(600, 180), (185, 300)], 3)
 
+    #-Column Code-
+    font = pygame.font.SysFont('timesnewroman', 24, False, False)
+    for a in range(len(LettersList)):
+        LettersChoice = LettersList[a]
+        for i in range(len(LettersChoice)):
+            text = font.render(LettersChoice[i],True,RED)
+            screen.blit(text, [letterX, letterY])
+            letterY += 20
+        letterX += 30
+    letterX = 0
+    
     pygame.draw.rect(screen, BLUE, [(15, 480-(MoleAmount*30)), (20, (MoleAmount*30))])
     pygame.draw.rect(screen, ORANGE, [(55, 480-(PressureAmount*5)), (20, (PressureAmount*5))])
     pygame.draw.rect(screen, RED, [(95, 480-(TempAmount*30)), (20, (TempAmount*30))])
