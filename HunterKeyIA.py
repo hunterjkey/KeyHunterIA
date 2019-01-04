@@ -35,7 +35,14 @@ Cycle = 0
 Counts = 0
 slidersY = 215
 notchesY = 0
-notchesX = 0
+notchesX = [615,630,645,660,675,690,705,720,735,750,765]
+slidertextY = 195
+slidertitles = ["Moles","Pressure","Temperature","Volume"]
+RedSlidersX = [690,690,690,690]
+RedSlidersY = 0
+ToMove = 0
+SliderChoice = 1
+SliderSelected = False
 
 MolesLetters = ["M","O","L","E","S"]
 MolesLettersX = [15,15,16,16,16]
@@ -98,6 +105,27 @@ while not done:
     pressed1, pressed2, pressed3 = pygame.mouse.get_pressed()
     
     #logical Code
+    if pressed1:
+        if (SliderSelected == False):
+            for i in range(4):
+                if (abs(mouseX-RedSlidersX[i])<6) and (abs(mouseY-(RedSlidersY+10))<11):
+                    ToMove = SliderChoice
+                    SliderSelected = True
+                SliderChoice+=1
+                RedSlidersY += 70
+            RedSlidersY = 215
+            SliderChoice = 1
+
+        else:
+            for i in range(11):
+                if (abs(mouseX-notchesX[i])<6) and (abs(mouseY-(RedSlidersY+10))<11):
+                    RedSlidersX[ToMove-1] = notchesX[i]
+        print (str(ToMove))
+        print (str(RedSlidersX))
+    else:
+        SliderSelected = False
+    
+        
     if ((MoleAmount*2)<len(MolesX)):
         for i in range(len(MolesX)-(MoleAmount*2)):
             if len(MolesX)>0:
@@ -143,7 +171,7 @@ while not done:
 
     if Cycle==10:
         PressureAmount = Counts
-        print (PressureAmount)
+        #print (PressureAmount)
         Cycle = 0
         Counts = 0
     Cycle+=1
@@ -167,6 +195,8 @@ while not done:
     pygame.draw.rect(screen, WHITE, [(130, 180), (30, 300)])
     pygame.draw.rect(screen, WHITE, [(175-bumpwidth, 180-bumpwidth), (300+(2*bumpwidth)+VolumeAmount, 200+(2*bumpwidth)+VolumeAmount)], 3)
     pygame.draw.rect(screen, WHITE, [(600, 180), (185, 300)], 3)
+
+    #sliders code
     for i in range(4):
         pygame.draw.line(screen, WHITE, [615, slidersY], [765, slidersY], 3)
         slidersY += 70
@@ -174,17 +204,21 @@ while not done:
 
     for i in range(4):
         for i in range(11):
-            pygame.draw.line(screen, WHITE, [notchesX, notchesY], [notchesX, notchesY+10], 3)
-            notchesX += 15
-        notchesX = 615
+            pygame.draw.line(screen, WHITE, [notchesX[i], notchesY], [notchesX[i], notchesY+10], 3)
         notchesY += 70
     notchesY = 220
 
-    notchesY = 215
     for i in range(4):
-        pygame.draw.line(screen, RED, [690, notchesY], [690, notchesY+20], 5)
-        notchesY += 70
-    notchesY = 220
+        pygame.draw.line(screen, RED, [RedSlidersX[i], RedSlidersY], [RedSlidersX[i], RedSlidersY+20], 5)
+        RedSlidersY += 70
+    RedSlidersY = 215
+
+    font = pygame.font.SysFont('timesnewroman', 20, False, False)
+    for i in range(4):
+        text = font.render(slidertitles[i],True,WHITE)
+        screen.blit(text, [615, slidertextY])
+        slidertextY += 70
+    slidertextY = 190
 
     pygame.draw.rect(screen, BLUE, [(15, 480-(MoleAmount*30)), (20, (MoleAmount*30))])
     pygame.draw.rect(screen, ORANGE, [(55, 480-(PressureAmount*5)), (20, (PressureAmount*5))])
